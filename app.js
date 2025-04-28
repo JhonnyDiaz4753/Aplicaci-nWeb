@@ -122,10 +122,10 @@ function mostrarComponente(componente) {
 
       let url = '';
       if (tipoMovimiento === 'entrada') {
-        url =  'http://3.148.228.241:8085/api/seminario/entradamateriaprima';
+        url =  'http://3.145.104.62:8085/api/seminario/entradamateriaprima';
         console.log(data);
       } else if (tipoMovimiento === 'salida') {
-        url = 'http://3.148.228.241:8085/api/seminario/salidamateriaprima';
+        url = 'http://3.145.104.62:8085/api/seminario/salidamateriaprima';
       }
 
       try {
@@ -168,7 +168,7 @@ function mostrarComponente(componente) {
 
 async function cargarMateriasPrimas() {
   try {
-    const response = await fetch( 'http://3.148.228.241:8085/api/seminario/materiaprima');
+    const response = await fetch( 'http://3.145.104.62:8085/api/seminario/materiaprima');
     materiasPrimas = await response.json();
 
     const select = document.getElementById('materiaPrimaSelect');
@@ -185,7 +185,7 @@ async function cargarMateriasPrimas() {
 
 async function cargarEntradas() {
   try {
-    const response = await fetch( 'http://3.148.228.241:8085/api/seminario/entradamateriaprima');
+    const response = await fetch( 'http://3.145.104.62:8085/api/seminario/entradamateriaprima');
     const data = await response.json();
 
     const tbody = document.querySelector('#tablaEntradas tbody');
@@ -212,7 +212,7 @@ async function cargarEntradas() {
 
 async function cargarSalidas() {
   try {
-    const response = await fetch( 'http://3.148.228.241:8085/api/seminario/salidamateriaprima');
+    const response = await fetch( 'http://3.145.104.62:8085/api/seminario/salidamateriaprima');
     const data = await response.json();
 
     const tbody = document.querySelector('#tablaSalidas tbody');
