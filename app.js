@@ -23,7 +23,7 @@ function mostrarComponente(componente) {
 
         <input type="text" name="descripcion" placeholder="Descripción (opcional)" maxlength="50">
 
-        <input type="text" name="cantidad" placeholder="Cantidad" required maxlength="50">
+        <input type="number" name="cantidad" placeholder="Cantidad" required maxlength="50">
 
         <button type="submit">Registrar</button>
       </form>
