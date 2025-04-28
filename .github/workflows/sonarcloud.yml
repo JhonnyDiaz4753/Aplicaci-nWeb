@@ -1,0 +1,45 @@
+name: SonarCloud Analysis
+
+on:
+  push:
+    branches:
+      - main
+      - 'release/*'  # Para analizar ramas de release, si las usas.
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  sonarcloud:
+    name: Run SonarCloud Analysis
+    runs-on: ubuntu-latest
+
+    steps:
+    # Check out the code
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    # Set up Node.js (si es un proyecto Node.js)
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '14'  # Ajusta la versión de Node.js a la que usas
+
+    # Instalar dependencias del proyecto (por ejemplo, npm install)
+    - name: Install dependencies
+      run: npm install
+
+    # Ejecutar SonarCloud Analysis
+    - name: SonarCloud Scan
+      uses: SonarSource/sonarcloud-github-action@v1
+      with:
+        organization: '<your-sonarcloud-organization>'
+        token: ${{ secrets.SONAR_TOKEN }}
+
+    # Optionally, upload the results to GitHub Checks
+    - name: Upload to GitHub Checks
+      if: success()
+      uses: actions/upload-artifact@v2
+      with:
+        name: sonarcloud-report
+        path: sonar-report.json
