@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Inventario de Materia Prima</title>
+  <link rel="stylesheet" href="styles.css">
+  
+  
+</head>
+<body>
+
+  <header>
+    <div class="logo">Logo</div>
+    <nav>
+      <a href="#">HU #1</a>
+    </nav>
+    <div class="auth-buttons">
+      <button>Login</button>
+      <button disabled>Register</button>
+    </div>
+  </header>
+
+  <div class="container">
+    <aside>
+      <h2>Menú lateral</h2>
+      <button onclick="mostrarComponente('registro')">Registro de Inventario</button>
+      <button onclick="mostrarComponente('reportes')">Reportes y Alertas</button>
+    </aside>
+
+    <main id="contenido-principal">
+      <!-- Aquí se cargarán los componentes dinámicamente -->
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+</body>
+</html>

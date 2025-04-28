@@ -1,0 +1,81 @@
+/* styles.css */
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+  }
+  
+  header {
+    background-color: #f0f0f0;
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  nav a {
+    margin: 0 10px;
+    text-decoration: none;
+    color: #333;
+  }
+  
+  .auth-buttons button {
+    margin-left: 10px;
+  }
+  
+  .container {
+    display: flex;
+    height: calc(100vh - 60px);
+  }
+  
+  aside {
+    width: 220px;
+    background-color: #eaeaea;
+    padding: 20px;
+    box-sizing: border-box;
+  }
+  
+  aside h2 {
+    margin-top: 0;
+  }
+  
+  aside button {
+    width: 100%;
+    margin: 10px 0;
+    padding: 10px;
+    cursor: pointer;
+  }
+  
+  main {
+    flex-grow: 1;
+    padding: 20px;
+    background-color: #ffffff;
+    overflow-y: auto;
+  }
+  
+  form {
+    margin-bottom: 30px;
+  }
+  
+  form input, form select, form button {
+    display: block;
+    width: 100%;
+    margin: 10px 0;
+    padding: 8px;
+  }
+  
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 30px;
+  }
+  
+  table, th, td {
+    border: 1px solid #ccc;
+  }
+  
+  th, td {
+    padding: 8px;
+    text-align: left;
+  }
+  
