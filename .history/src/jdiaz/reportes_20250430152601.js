@@ -73,7 +73,7 @@ export async function renderizarDashboard() {
   const meses = [...new Set([...Object.keys(entradasPorMes), ...Object.keys(salidasPorMes)])];
 
   // === Gráfico 1: Entradas vs Salidas por mes ===
-  const graficoEntradasSalidas=new Chart(document.getElementById('graficoEntradasSalidas'), {
+  new Chart(document.getElementById('graficoEntradasSalidas'), {
     type: 'bar',
     data: {
       labels: meses,
@@ -92,7 +92,7 @@ export async function renderizarDashboard() {
   // === Gráfico 2: Estacionalidad (entradas - salidas por mes) ===
 const variacionPorMes = meses.map(m => (entradasPorMes[m] || 0) - (salidasPorMes[m] || 0));
 
-const estacional=new Chart(document.getElementById('graficoEstacionalidad'), {
+new Chart(document.getElementById('graficoEstacionalidad'), {
   type: 'line',
   data: {
     labels: meses,
@@ -151,7 +151,7 @@ const estacional=new Chart(document.getElementById('graficoEstacionalidad'), {
   const materias = await responseMP.json();
   materiasPrimas = materias;
 
-  const dominacion = new Chart(document.getElementById('graficoDominanciaStock'), {
+  new Chart(document.getElementById('graficoDominanciaStock'), {
     type: 'pie',
     data: {
       labels: materias.map(m => m.nombre),
