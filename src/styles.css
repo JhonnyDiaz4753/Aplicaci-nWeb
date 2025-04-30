@@ -1,0 +1,144 @@
+/* styles.css */
+
+/* Bootstrap override and general reset */
+body {
+  margin: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #F8F9FA;
+}
+
+header {
+  background-color: #ffffff;
+  padding: 1rem 2rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+nav a {
+  margin: 0 15px;
+  color: #007BFF;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+nav a:hover {
+  color: #0056b3;
+}
+
+.auth-buttons button {
+  margin-left: 10px;
+}
+
+/* Layout */
+.container {
+  display: flex;
+  height: calc(100vh - 60px);
+}
+
+aside {
+  width: 240px;
+  background-color: #ffffff;
+  padding: 20px;
+  border-right: 1px solid #e0e0e0;
+}
+
+aside h2 {
+  margin-top: 0;
+  color: #333;
+}
+
+aside button {
+  width: 100%;
+  margin: 10px 0;
+  padding: 12px;
+  font-weight: 500;
+  background-color: #007BFF;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  transition: background-color 0.3s;
+}
+
+aside button:hover {
+  background-color: #0056b3;
+}
+
+main {
+  flex-grow: 1;
+  padding: 30px;
+  background-color: #F8F9FA;
+  overflow-y: auto;
+}
+
+form input, form select, form button {
+  display: block;
+  width: 100%;
+  margin: 10px 0;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+/* Table styles */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+  margin-bottom: 30px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+th, td {
+  padding: 12px;
+  border: 1px solid #dee2e6;
+  text-align: left;
+}
+
+th {
+  background-color: #e9ecef;
+  font-weight: 600;
+}
+
+/* Dashboard charts */
+.graficos-dashboard {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.graficos-dashboard canvas {
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+  height: 300px !important;
+  max-height: 300px;
+}
+
+/* Footer data info */
+.graficos-dashboard p {
+  text-align: center;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+  color: #6c757d;
+}
+
+/* Button from Uiverse example */
+#generarPDF {
+  background: linear-gradient(to right, #007BFF, #17A2B8);
+  color: white;
+  padding: 12px 20px;
+  font-weight: 500;
+  border: none;
+  border-radius: 10px;
+  transition: background 0.3s, transform 0.2s;
+}
+
+#generarPDF:hover {
+  background: linear-gradient(to right, #0056b3, #138496);
+  transform: scale(1.03);
+}
