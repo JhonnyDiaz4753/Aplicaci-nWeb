@@ -1,0 +1,43 @@
+# Evita copiar dependencias innecesarias
+node_modules
+bower_components
+
+# Archivos de configuración y secretos
+.env
+.env.*
+*.env
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+
+# Repositorio Git
+.git
+.gitignore
+
+# Logs y datos temporales
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.tmp
+
+# Archivos de desarrollo
+*.md
+.vscode
+.idea
+*.bak
+
+# Archivos de Docker
+Dockerfile
+docker-compose.yml
+docker-compose.*.yml
+
+# Archivos de pruebas y documentación
+coverage
+tests
+docs
+
+# Otros posibles artefactos de compilación
+build
