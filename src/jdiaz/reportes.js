@@ -64,8 +64,8 @@ document.addEventListener("click", async (e) => {
 // Renderizado de gráficos
 export async function renderizarDashboard() {
   const [entradas, salidas] = await Promise.all([
-    fetch('http://3.145.104.62:8085/api/seminario/entradamateriaprima').then(r => r.json()),
-    fetch('http://3.145.104.62:8085/api/seminario/salidamateriaprima').then(r => r.json())
+    fetch('http://localhost:3000/api/seminario/entradamateriaprima').then(r => r.json()),
+    fetch('http://localhost:3000/api/seminario/salidamateriaprima').then(r => r.json())
   ]);
 
   const entradasPorMes = agruparPorMes(entradas);
@@ -147,7 +147,7 @@ const estacional=new Chart(document.getElementById('graficoEstacionalidad'), {
 
 
   // === Gráfico 3: Dominancia del stock actual ===
-  const responseMP = await fetch('http://3.145.104.62:8085/api/seminario/materiaprima');
+  const responseMP = await fetch('http://localhost:3000/api/seminario/materiaprima');
   const materias = await responseMP.json();
   materiasPrimas = materias;
 
