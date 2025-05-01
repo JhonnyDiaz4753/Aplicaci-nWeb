@@ -28,7 +28,7 @@ export async function renderAlertas(contenedor) {
 
 async function cargarMateriasPrimas() {
   try {
-    const response = await fetch('http://3.145.104.62:8085/api/seminario/materiaprima');
+    const response = await fetch('http://localhost:3000/api/seminario/materiaprima');
     materiasPrimas = await response.json();
   } catch (error) {
     console.error('Error cargando materias primas:', error);
@@ -119,10 +119,4 @@ function notificarIndividual(mp) {
   });
 }
 
-function generarReporte(mp) {
-  Swal.fire({
-    title: `Generando Reporte`,
-    icon: 'info',
-    text: `Se generará un reporte para: ${mp.nombre}. Funcionalidad próximamente.`
-  });
-}
+

@@ -12,7 +12,7 @@ export function renderRegistro(contenedor) {
         <option value="salida">Salida</option>
       </select>
 
-      <input type="date" name="fecha" required>
+     <input type="date" name="fecha" class="custom-date" required>
 
       <select name="materiaPrima" id="materiaPrimaSelect" required>
         <option value="">Seleccione Materia Prima</option>
@@ -102,8 +102,8 @@ export function renderRegistro(contenedor) {
     };
 
     let url = tipoMovimiento === 'entrada'
-      ? 'http://3.145.104.62:8085/api/seminario/entradamateriaprima'
-      : 'http://3.145.104.62:8085/api/seminario/salidamateriaprima';
+      ? 'http://localhost:3000/api/seminario/entradamateriaprima'
+      : 'http://localhost:3000/api/seminario/salidamateriaprima';
 
     try {
       const response = await fetch(url, {
@@ -143,7 +143,7 @@ function validarAlfanumerico(texto) {
 
 async function cargarMateriasPrimas() {
   try {
-    const response = await fetch('http://3.145.104.62:8085/api/seminario/materiaprima');
+    const response = await fetch('http://localhost:3000/api/seminario/materiaprima');
     materiasPrimas = await response.json();
 
     const select = document.getElementById('materiaPrimaSelect');
@@ -160,7 +160,7 @@ async function cargarMateriasPrimas() {
 
 async function cargarEntradas() {
   try {
-    const response = await fetch('http://3.145.104.62:8085/api/seminario/entradamateriaprima');
+    const response = await fetch('http://localhost:3000/api/seminario/entradamateriaprima');
     const data = await response.json();
 
     const tbody = document.querySelector('#tablaEntradas tbody');
@@ -172,8 +172,12 @@ async function cargarEntradas() {
           <td>${item.cantidad}</td>
           <td>${item.materiaPrima.nombre}</td>
           <td>
-            <button onclick="editarRegistro(${item.id}, 'entrada')">Editar</button>
-            <button onclick="eliminarRegistro(${item.id}, 'entrada')">Eliminar</button>
+            <button class="button" onclick="eliminarRegistro(${item.id}, 'salida')">
+            <svg viewBox="0 0 448 512" class="svgIcon">
+            <path d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z">
+            </path>
+            </svg
+            </button>
           </td>
         </tr>
       `;
@@ -186,7 +190,7 @@ async function cargarEntradas() {
 
 async function cargarSalidas() {
   try {
-    const response = await fetch('http://3.145.104.62:8085/api/seminario/salidamateriaprima');
+    const response = await fetch('http://localhost:3000/api/seminario/salidamateriaprima');
     const data = await response.json();
 
     const tbody = document.querySelector('#tablaSalidas tbody');
@@ -198,8 +202,12 @@ async function cargarSalidas() {
           <td>${item.cantidad}</td>
           <td>${item.materiaPrima.nombre}</td>
           <td>
-            <button onclick="editarRegistro(${item.id}, 'salida')">Editar</button>
-            <button onclick="eliminarRegistro(${item.id}, 'salida')">Eliminar</button>
+            <button class="button" onclick="eliminarRegistro(${item.id}, 'salida')">
+            <svg viewBox="0 0 448 512" class="svgIcon">
+            <path d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z">
+            </path>
+            </svg
+            </button>
           </td>
         </tr>
       `;
@@ -210,11 +218,8 @@ async function cargarSalidas() {
   }
 }
 
-// Funciones futuras de edición y eliminación
-window.editarRegistro = function(id, tipo) {
-  Swal.fire('Función en desarrollo', `Editar ${tipo} ID: ${id}`, 'info');
-};
-
+// Funciones futuras de eliminación
 window.eliminarRegistro = function(id, tipo) {
+  console.log(`Eliminar ${tipo} con ID: ${id}`);
   Swal.fire('Función en desarrollo', `Eliminar ${tipo} ID: ${id}`, 'warning');
 };
