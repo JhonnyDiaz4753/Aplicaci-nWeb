@@ -33,8 +33,8 @@ jobs:
     - name: SonarCloud Scan
       uses: SonarSource/sonarcloud-github-action@v1
       with:
-        organization: '<your-sonarcloud-organization>'
-        token: ${{ secrets.SONAR_TOKEN }}
+        organization: 'JhonnyDiaz4753'
+        token: e74cbad20449fb8eaebc47c2d5b4a7ba8dbe0029
 
     # Optionally, upload the results to GitHub Checks
     - name: Upload to GitHub Checks
