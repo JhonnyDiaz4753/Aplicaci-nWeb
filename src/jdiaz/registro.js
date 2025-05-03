@@ -172,7 +172,7 @@ async function cargarEntradas() {
           <td>${item.cantidad}</td>
           <td>${item.materiaPrima.nombre}</td>
           <td>
-            <button class="button" onclick="eliminarRegistro(${item.id}, 'salida')">
+            <button class="button" onclick="eliminarRegistro(${item.id},'entrada' )">
             <svg viewBox="0 0 448 512" class="svgIcon">
             <path d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z">
             </path>
@@ -218,8 +218,65 @@ async function cargarSalidas() {
   }
 }
 
-// Funciones futuras de eliminación
-window.eliminarRegistro = function(id, tipo) {
-  console.log(`Eliminar ${tipo} con ID: ${id}`);
-  Swal.fire('Función en desarrollo', `Eliminar ${tipo} ID: ${id}`, 'warning');
+window.eliminarRegistro = async function(id, tipoMovimiento) {
+  const confirmacion = await Swal.fire({
+    title: '¿Estás seguro?',
+    text: `¿Quieres eliminar esta ${tipoMovimiento}? Esta acción no se puede deshacer.`,
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#d33',
+    cancelButtonColor: '#3085d6',
+    confirmButtonText: 'Sí, eliminar',
+    cancelButtonText: 'Cancelar'
+  });
+
+  if (!confirmacion.isConfirmed) return;
+
+  try {
+    let data, materia, nuevoStock;
+
+    if (tipoMovimiento === 'entrada') {
+      const response = await fetch(`http://localhost:3000/api/seminario/entradamateriaprima/${id}`);
+      data = await response.json();
+      const materiaRes = await fetch(`http://localhost:3000/api/seminario/materiaprima/${data.materiaPrima.id}`);
+      materia = await materiaRes.json();
+
+      nuevoStock = materia.stockActual - data.cantidad;
+    } else if (tipoMovimiento === 'salida') {
+      const response = await fetch(`http://localhost:3000/api/seminario/salidamateriaprima/${id}`);
+      data = await response.json();
+      const materiaRes = await fetch(`http://localhost:3000/api/seminario/materiaprima/${data.materiaPrima.id}`);
+      materia = await materiaRes.json();
+
+      nuevoStock = materia.stockActual + data.cantidad;
+    } else {
+      console.error('Tipo de movimiento no válido:', tipoMovimiento);
+      return;
+    }
+
+    const materiaActualizada = {
+      ...materia,
+      stockActual: nuevoStock
+    };
+
+    await fetch('http://localhost:3000/api/seminario/materiaprima', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(materiaActualizada)
+    });
+
+    const endpoint =
+      tipoMovimiento === 'entrada'
+        ? `entradamateriaprima/${id}`
+        : `salidamateriaprima/${id}`;
+
+    await fetch(`http://localhost:3000/api/seminario/${endpoint}`, {
+      method: 'DELETE'
+    });
+
+    Swal.fire('Eliminado', `Registro de ${tipoMovimiento} eliminado correctamente.`, 'success');
+  } catch (error) {
+    console.error('Error al eliminar el registro:', error);
+    Swal.fire('Error', 'Ocurrió un error al eliminar el registro.', 'error');
+  }
 };

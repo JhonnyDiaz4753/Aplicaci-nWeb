@@ -80,6 +80,68 @@ form input, form select, form button {
   border: 1px solid #ccc;
   border-radius: 6px;
 }
+.btnNotificarIndividual {
+  width: 200px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+  padding: 0px 15px;
+  background-color: rgb(66, 66, 66);
+  border-radius: 10px;
+  color: white;
+  border: none;
+  position: relative;
+  cursor: pointer;
+  transition-duration: .2s;
+}
+
+.bell {
+  width: 13px;
+}
+
+.bell path {
+  fill: rgb(0, 206, 62);
+}
+
+.arrow {
+  position: absolute;
+  right: 0;
+  width: 30px;
+  height: 100%;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btnNotificarIndividual:hover {
+  background-color: rgb(77, 77, 77);
+  transition-duration: .2s;
+}
+
+.btnNotificarIndividual:hover .arrow {
+  animation: slide-right .6s ease-out both;
+}
+/* arrow animation */
+@keyframes slide-right {
+  0% {
+    transform: translateX(-10px);
+    opacity: 0;
+  }
+
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.btnNotificarIndividual:active {
+  transform: translate(1px , 1px);
+  transition-duration: .2s;
+}
+
 
 /* Table styles */
 table {
