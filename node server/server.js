@@ -170,6 +170,21 @@ app.put('/api/seminario/materiaprima', async (req, res) => {
 });
 
 // Eliminar entrada de entrada o salida de materia prima
+app.delete('/api/seminario/materiaprima/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const response = await fetch(`${API_BASE}/materiaprima/${id}`, {
+      method: 'DELETE'
+    });
+    if (!response.ok) return res.status(response.status).json({ error: 'Error al eliminar entrada' });
+
+    res.json({ message: 'materia prima eliminada correctamente' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Error interno al procesar la solicitud' });
+  }
+});
 app.delete('/api/seminario/entradamateriaprima/:id', async (req, res) => {
   const { id } = req.params;
 
