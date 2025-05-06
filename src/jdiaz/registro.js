@@ -43,7 +43,7 @@ export function renderRegistro(contenedor) {
       </select>
       <span id="stockInfo" style="margin-left: 10px; font-weight: bold;"></span>
 
-      <input type="text" name="descripcion" placeholder="Descripción (opcional)" maxlength="50">
+     
       <input type="number" name="cantidad" placeholder="Cantidad" required maxlength="50">
 
       <button type="submit">Registrar</button>
@@ -113,7 +113,6 @@ export function renderRegistro(contenedor) {
     const tipoMovimiento = form.tipoMovimiento.value.trim();
     const fecha = form.fecha.value.trim();
     const materiaPrimaId = form.materiaPrima.value.trim();
-    const descripcion = form.descripcion.value.trim();
     const cantidad = form.cantidad.value.trim();
 
     let valid = true;
@@ -123,9 +122,6 @@ export function renderRegistro(contenedor) {
     if (!materiaPrimaId) marcarError(form.materiaPrima), valid = false;
     if (!cantidad || isNaN(cantidad) || cantidad <= 0) {
       marcarError(form.cantidad), valid = false;
-    }
-    if (descripcion && (!validarAlfanumerico(descripcion) || descripcion.length > 50)) {
-      marcarError(form.descripcion), valid = false;
     }
 
     if (!valid) {
@@ -156,7 +152,7 @@ export function renderRegistro(contenedor) {
     }
 
     // Primero actualizamos el stock
-    const updateResponse = await fetch('http://localhost:3000/api/seminario/materiaprima', {
+    const updateResponse = await fetch('http://3.148.190.86:3000/api/seminario/materiaprima', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -171,14 +167,13 @@ export function renderRegistro(contenedor) {
     }
 
     const movimientoUrl = tipoMovimiento === 'entrada'
-      ? 'http://localhost:3000/api/seminario/entradamateriaprima'
-      : 'http://localhost:3000/api/seminario/salidamateriaprima';
+      ? 'http://3.148.190.86:3000/api/seminario/entradamateriaprima'
+      : 'http://3.148.190.86:3000/api/seminario/salidamateriaprima';
 
     const movimientoData = {
       materiaPrima: {
         id: materiaSeleccionada.id,
         nombre: materiaSeleccionada.nombre,
-        descripcion: descripcion || materiaSeleccionada.descripcion,
         stockActual: nuevoStock
       },
       cantidad: cantidadNum,
@@ -225,7 +220,7 @@ function validarAlfanumerico(texto) {
 
 async function cargarMateriasPrimas() {
   try {
-    const response = await fetch('http://localhost:3000/api/seminario/materiaprima');
+    const response = await fetch('http://3.148.190.86:3000/api/seminario/materiaprima');
     materiasPrimas = await response.json();
 
     const select = document.getElementById('materiaPrimaSelect');
@@ -242,7 +237,7 @@ async function cargarMateriasPrimas() {
 
 async function cargarEntradas() {
   try {
-    const response = await fetch('http://localhost:3000/api/seminario/entradamateriaprima');
+    const response = await fetch('http://3.148.190.86:3000/api/seminario/entradamateriaprima');
     const data = await response.json();
 
     const tbody = document.querySelector('#tablaEntradas tbody');
@@ -270,7 +265,7 @@ async function cargarEntradas() {
 
 async function cargarSalidas() {
   try {
-    const response = await fetch('http://localhost:3000/api/seminario/salidamateriaprima');
+    const response = await fetch('http://3.148.190.86:3000/api/seminario/salidamateriaprima');
     const data = await response.json();
 
     const tbody = document.querySelector('#tablaSalidas tbody');
@@ -316,14 +311,14 @@ window.eliminarEntradaSalida = async function(id, tipoMovimiento) {
     let data, materia, nuevoStock;
 
     if (tipoMovimiento === 'entrada') {
-      const response = await fetch(`http://localhost:3000/api/seminario/entradamateriaprima/${id}`);
+      const response = await fetch(`http://3.148.190.86:3000/api/seminario/entradamateriaprima/${id}`);
       data = await response.json();
 
       materia = materiasPrimas.find(m => m.id === data.materiaPrima.id);
       nuevoStock = materia.stockActual - data.cantidad;
 
     } else if (tipoMovimiento === 'salida') {
-      const response = await fetch(`http://localhost:3000/api/seminario/salidamateriaprima/${id}`);
+      const response = await fetch(`http://3.148.190.86:3000/api/seminario/salidamateriaprima/${id}`);
       data = await response.json();
 
       materia = materiasPrimas.find(m => m.id === data.materiaPrima.id);
@@ -337,7 +332,7 @@ window.eliminarEntradaSalida = async function(id, tipoMovimiento) {
     // Actualizar stock
     const materiaActualizada = { ...materia, stockActual: nuevoStock };
 
-    await fetch('http://localhost:3000/api/seminario/materiaprima', {
+    await fetch('http://3.148.190.86:3000/api/seminario/materiaprima', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(materiaActualizada)
@@ -349,7 +344,7 @@ window.eliminarEntradaSalida = async function(id, tipoMovimiento) {
       ? `entradamateriaprima/${id}`
       : `salidamateriaprima/${id}`;
   
-  await fetch(`http://localhost:3000/api/seminario/${endpoint}`, {
+  await fetch(`http://3.148.190.86:3000/api/seminario/${endpoint}`, {
     method: 'DELETE'
   });
     Swal.fire('Eliminado', `Registro de ${tipoMovimiento} eliminado correctamente.`, 'success');
