@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Gestión de Órdenes de Compra - Responsable de Compras</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0; padding: 0;
+      background: #f5f7fa;
+      color: #333;
+    }
+    header {
+      background: #004080;
+      color: white;
+      padding: 1rem 2rem;
+      text-align: center;
+    }
+    main {
+      display: flex;
+      height: calc(100vh - 60px);
+    }
+    #alerts-list {
+      width: 30%;
+      background: white;
+      border-right: 1px solid #ccc;
+      overflow-y: auto;
+      padding: 1rem;
+    }
+    #alerts-list h2 {
+      margin-top: 0;
+      font-size: 1.2rem;
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 0.5rem;
+    }
+    .alert-item {
+      padding: 0.8rem;
+      border-bottom: 1px solid #eee;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .alert-item:hover, .alert-item.selected {
+      background: #e6f0ff;
+    }
+    .alert-item .area {
+      font-weight: bold;
+      color: #004080;
+    }
+    .alert-item .date {
+      font-size: 0.8rem;
+      color: #666;
+    }
+    #alert-details {
+      flex-grow: 1;
+      padding: 1.5rem 2rem;
+      overflow-y: auto;
+      background: white;
+    }
+    #alert-details h2 {
+      margin-top: 0;
+      color: #004080;
+    }
+    #alert-details p {
+      margin: 0.5rem 0 1rem 0;
+    }
+    form label {
+      display: block;
+      margin: 0.8rem 0 0.3rem 0;
+      font-weight: bold;
+    }
+    form input[type="text"],
+    form input[type="date"],
+    form select {
+      width: 100%;
+      padding: 0.4rem 0.6rem;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 3px;
+      box-sizing: border-box;
+    }
+    form button {
+      margin-top: 1rem;
+      background: #004080;
+      color: white;
+      border: none;
+      padding: 0.6rem 1.2rem;
+      font-size: 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    form button:hover {
+      background: #003366;
+    }
+    #message {
+      margin-top: 1rem;
+      font-weight: bold;
+      min-height: 1.2em;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Gestión de Órdenes de Compra</h1>
+    <p>Responsable de Compras - Seguimiento y generación de órdenes</p>
+  </header>
+  <main>
+    <section id="alerts-list" aria-label="Lista de alertas de reabastecimiento">
+      <h2>Alertas de Reabastecimiento</h2>
+      <!-- Lista dinámica de alertas -->
+    </section>
+    <section id="alert-details" aria-live="polite" aria-atomic="true">
+      <h2>Seleccione una alerta para ver detalles</h2>
+    </section>
+  </main>
+
+  <script>
+    // Simulación de alertas recibidas (normalmente vendrían de backend)
+    const alerts = [
+      {
+        id: 'OC001',
+        area: 'Almacén',
+        date: '2024-06-10',
+        description: 'Solicitud de reabastecimiento para producto XYZ, stock crítico.',
+        order: {
+          status: 'pendiente',
+          provider: '',
+          estimatedDelivery: ''
+        }
+      },
+      {
+        id: 'OC002',
+        area: 'Producción',
+        date: '2024-06-11',
+        description: 'Reabastecimiento necesario para línea de producción ABC.',
+        order: {
+          status: 'aprobada',
+          provider: 'Proveedor ABC',
+          estimatedDelivery: '2024-06-20'
+        }
+      }
+    ];
+
+    const alertsListEl = document.getElementById('alerts-list');
+    const alertDetailsEl = document.getElementById('alert-details');
+    let selectedAlertId = null;
+
+    function renderAlertsList() {
+      let html = '';
+      alerts.forEach(alert => {
+        const selectedClass = alert.id === selectedAlertId ? 'selected' : '';
+        html += `
+          <div class="alert-item ${selectedClass}" tabindex="0" role="button" aria-pressed="${selectedClass ? 'true' : 'false'}" data-id="${alert.id}">
+            <div class="area">${alert.area}</div>
+            <div class="date">${alert.date}</div>
+            <div>${alert.description}</div>
+          </div>
+        `;
+      });
+      alertsListEl.innerHTML = html;
+
+      document.querySelectorAll('.alert-item').forEach(item => {
+        item.addEventListener('click', () => selectAlert(item.dataset.id));
+        item.addEventListener('keydown', e => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            selectAlert(item.dataset.id);
+          }
+        });
+      });
+    }
+
+    function selectAlert(id) {
+      selectedAlertId = id;
+      renderAlertsList();
+      renderAlertDetails();
+    }
+
+    function renderAlertDetails() {
+      const alert = alerts.find(a => a.id === selectedAlertId);
+      if (!alert) {
+        alertDetailsEl.innerHTML = '<h2>Seleccione una alerta para ver detalles</h2>';
+        return;
+      }
+      const { order } = alert;
+      alertDetailsEl.innerHTML = `
+        <h2>Detalle de Orden: ${alert.id}</h2>
+        <p><strong>Área solicitante:</strong> ${alert.area}</p>
+        <p><strong>Fecha de solicitud:</strong> ${alert.date}</p>
+        <p><strong>Descripción:</strong> ${alert.description}</p>
+
+        <form id="order-form" aria-label="Formulario de orden de compra">
+          <label for="status">Estado de la orden:</label>
+          <select id="status" name="status" aria-required="true">
+            <option value="pendiente" ${order.status === 'pendiente' ? 'selected' : ''}>Pendiente</option>
+            <option value="aprobada" ${order.status === 'aprobada' ? 'selected' : ''}>Aprobada</option>
+            <option value="en tránsito" ${order.status === 'en tránsito' ? 'selected' : ''}>En tránsito</option>
+            <option value="recibida" ${order.status === 'recibida' ? 'selected' : ''}>Recibida</option>
+          </select>
+
+          <label for="provider">Proveedor:</label>
+          <input type="text" id="provider" name="provider" value="${order.provider}" placeholder="Nombre del proveedor" aria-required="true" />
+
+          <label for="estimatedDelivery">Estimación de entrega:</label>
+          <input type="date" id="estimatedDelivery" name="estimatedDelivery" value="${order.estimatedDelivery}" aria-required="true" />
+
+          <button type="submit">Guardar</button>
+        </form>
+        <div id="message" role="alert" aria-live="assertive"></div>
+      `;
+
+      const form = document.getElementById('order-form');
+      const messageEl = document.getElementById('message');
+
+      form.addEventListener('submit', e => {
+        e.preventDefault();
+        messageEl.textContent = '';
+        messageEl.style.color = 'red';
+
+        const status = form.status.value.trim();
+        const provider = form.provider.value.trim();
+        const estimatedDelivery = form.estimatedDelivery.value;
+
+        if (!status) {
+          messageEl.textContent = 'Por favor, seleccione un estado válido.';
+          return;
+        }
+        if (!provider) {
+          messageEl.textContent = 'Por favor, ingrese el nombre del proveedor.';
+          return;
+        }
+        if (!estimatedDelivery) {
+          messageEl.textContent = 'Por favor, ingrese la fecha estimada de entrega.';
+          return;
+        }
+
+        // Aquí se podría llamar a la API PUT /ordencompra para actualizar la orden
+        // Por ahora actualizamos localmente
+        alert.order.status = status;
+        alert.order.provider = provider;
+        alert.order.estimatedDelivery = estimatedDelivery;
+
+        messageEl.style.color = 'green';
+        messageEl.textContent = 'Orden de compra actualizada correctamente.';
+
+        renderAlertsList();
+      });
+    }
+
+    // Inicializar
+    renderAlertsList();
+  </script>
+</body>
+</html>
