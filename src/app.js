@@ -2,7 +2,6 @@ import { renderRegistro } from './jdiaz/registro.js';
 import { renderAlertas } from './jdiaz/Alertas.js';
 import { renderReportes } from './jdiaz/reportes.js';
 
-
 document.addEventListener('DOMContentLoaded', () => {
   mostrarComponente('bienvenida'); // Muestra la bienvenida al cargar la página
   // Al hacer clic en el logo
@@ -12,12 +11,14 @@ document.addEventListener('DOMContentLoaded', () => {
     mostrarBienvenida();
   });
 
-  // Puedes agregar listeners de navegación aquí si tienes botones de menú
+  // Listeners para botones de menú
   document.getElementById('btnRegistro')?.addEventListener('click', () => mostrarComponente('registro'));
   document.getElementById('btnAlertas')?.addEventListener('click', () => mostrarComponente('Alertas'));
   document.getElementById('btnReportes')?.addEventListener('click', () => mostrarComponente('reportes'));
+
   document.getElementById('btnProductos')?.addEventListener('click', () => mostrarComponente('btnProductos'));
   document.getElementById('btnconsulta')?.addEventListener('click', () => mostrarComponente('btnconsulta'));
+ fdbcc56fa2bb079f76e388085b615e74a091cb3a
 });
 
 function mostrarComponente(componente) {
