@@ -43,28 +43,56 @@ export async function renderReportes(contenedor) {
 document.addEventListener("click", async (e) => {
   if (e.target && e.target.id === "generarPDF") {
     const { jsPDF } = window.jspdf;
-
-    const pdf = new jsPDF("p", "mm", "a4");
     const dashboard = document.querySelector(".graficos-dashboard");
 
-    await html2canvas(dashboard, { scale: 2 }).then(canvas => {
+    // Mostrar SweetAlert2 con spinner antes de generar el PDF
+    Swal.fire({
+      title: 'Generando reporte...',
+      text: 'Por favor espera unos segundos.',
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading(); // Muestra el spinner
+      }
+    });
+
+    try {
+      const canvas = await html2canvas(dashboard, { scale: 2 });
       const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF("p", "mm", "a4");
       const imgProps = pdf.getImageProperties(imgData);
       const pdfWidth = pdf.internal.pageSize.getWidth();
       const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
 
       pdf.text("Dashboard de Materia Prima, Entradas y Salidas", 10, 10);
       pdf.addImage(imgData, "PNG", 10, 20, pdfWidth - 20, pdfHeight);
+
       pdf.save("dashboard_report.pdf");
-    });
+
+      // Mostrar mensaje de éxito
+      Swal.fire({
+        icon: 'success',
+        title: 'Reporte generado',
+        text: 'El reporte ha sido descargado exitosamente.',
+        timer: 2000,
+        showConfirmButton: false
+      });
+    } catch (error) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error al generar el reporte',
+        text: 'Hubo un problema al generar el PDF.'
+      });
+      console.error(error);
+    }
   }
 });
+
 
 // Renderizado de gráficos
 export async function renderizarDashboard() {
   const [entradas, salidas] = await Promise.all([
-    fetch('http://localhost:3000/api/seminario/entradamateriaprima').then(r => r.json()),
-    fetch('http://localhost:3000/api/seminario/salidamateriaprima').then(r => r.json())
+    fetch('http://3.148.190.86:3000/api/seminario/entradamateriaprima').then(r => r.json()),
+    fetch('http://3.148.190.86:3000/api/seminario/salidamateriaprima').then(r => r.json())
   ]);
 
   const entradasPorMes = agruparPorMes(entradas);
@@ -160,7 +188,7 @@ document.getElementById("cantidadMateriales").textContent = idsRecientes.length;
 
 
 // Obtener todas las materias primas
-const responseMP = await fetch('http://localhost:3000/api/seminario/materiaprima');
+const responseMP = await fetch('http://3.148.190.86:3000/api/seminario/materiaprima');
 const todasLasMaterias = await responseMP.json();
 
 // Buscar manualmente las materias primas por ID con un bucle
