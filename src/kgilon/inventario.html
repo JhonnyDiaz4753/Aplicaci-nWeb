@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Gestión de Inventario</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    h1 {
+      text-align: center;
+    }
+    input {
+      margin-bottom: 10px;
+      width: 100%;
+      padding: 8px;
+      font-size: 16px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
+    .no-results {
+      margin-top: 10px;
+      color: red;
+      font-weight: bold;
+    }
+    .pagination {
+      margin-top: 15px;
+      text-align: center;
+    }
+    .pagination button {
+      padding: 8px 12px;
+      margin: 0 5px;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Inventario de Productos</h1>
+  <div>
+    <input type="text" id="searchInput" placeholder="Buscar por nombre o descripción..." style="width: 400px;"/>
+  </div>
+
+  <table id="productTable">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Nombre</th>
+        <th>Descripción</th>
+        <th>Stock Actual</th>
+      </tr>
+    </thead>
+    <tbody id="tableBody"></tbody>
+  </table>
+
+  <div class="pagination">
+    <button id="prevBtn">Anterior</button>
+    <span id="pageInfo"></span>
+    <button id="nextBtn">Siguiente</button>
+  </div>
+
+  <div class="no-results" id="noResults" style="display: none;">No hay coincidencias.</div>
+
+  <script>
+    const API_URL = "http://3.145.104.62:8085/api/seminario/materiaprima";
+    const tableBody = document.getElementById("tableBody");
+    const searchInput = document.getElementById("searchInput");
+    const noResults = document.getElementById("noResults");
+    const prevBtn = document.getElementById("prevBtn");
+    const nextBtn = document.getElementById("nextBtn");
+    const pageInfo = document.getElementById("pageInfo");
+
+    const rowsPerPage = 10;
+    let currentPage = 1;
+    let data = [];
+    let filteredData = [];
+
+    async function fetchData() {
+      try {
+        const response = await fetch(API_URL);
+        data = await response.json();
+        filteredData = data;
+        renderTable();
+      } catch (error) {
+        tableBody.innerHTML = "<tr><td colspan='4'>Error al cargar los datos.</td></tr>";
+      }
+    }
+
+    function renderTable() {
+      const start = (currentPage - 1) * rowsPerPage;
+      const end = start + rowsPerPage;
+      const pageItems = filteredData.slice(start, end);
+
+      tableBody.innerHTML = "";
+
+      if (filteredData.length === 0) {
+        noResults.style.display = "block";
+        pageInfo.textContent = "";
+        return;
+      }
+
+      noResults.style.display = "none";
+
+      pageItems.forEach(item => {
+        const row = `
+          <tr>
+            <td>${item.id}</td>
+            <td>${item.nombre}</td>
+            <td>${item.descripcion}</td>
+            <td>${item.stockActual}</td>
+          </tr>
+        `;
+        tableBody.innerHTML += row;
+      });
+
+      pageInfo.textContent = `Página ${currentPage} de ${Math.ceil(filteredData.length / rowsPerPage)}`;
+      prevBtn.disabled = currentPage === 1;
+      nextBtn.disabled = currentPage === Math.ceil(filteredData.length / rowsPerPage);
+    }
+
+    searchInput.addEventListener("input", () => {
+      const searchTerm = searchInput.value.toLowerCase();
+      filteredData = data.filter(item =>
+        item.nombre.toLowerCase().includes(searchTerm) ||
+        item.descripcion.toLowerCase().includes(searchTerm)
+      );
+      currentPage = 1;
+      renderTable();
+    });
+
+    prevBtn.addEventListener("click", () => {
+      if (currentPage > 1) {
+        currentPage--;
+        renderTable();
+      }
+    });
+
+    nextBtn.addEventListener("click", () => {
+      if (currentPage < Math.ceil(filteredData.length / rowsPerPage)) {
+        currentPage++;
+        renderTable();
+      }
+    });
+
+    fetchData();
+  </script>
+</body>
+</html>
+
