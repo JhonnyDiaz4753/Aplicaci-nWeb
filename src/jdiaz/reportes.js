@@ -14,23 +14,18 @@ export async function renderReportes(contenedor) {
 
     <div class="graficos-dashboard" style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-top: 2rem;">
       <div>
-        <canvas id="graficoEntradasSalidas"></canvas>
-        <p style="text-align:center; margin-top:0.5rem;">Origen de datos: N/A</p>
-      </div>
-      <div>
-        <canvas id="graficoEstacionalidad"></canvas>
-        <p style="text-align:center; margin-top:0.5rem;">Origen de datos: N/A</p>
-      </div>
-      <div>
-        <canvas id="graficoDominanciaStock"></canvas>
-        <p style="text-align:center; margin-top:0.5rem;">Origen de datos: N/A</p>
-      </div>
-    
+  <canvas id="graficoEntradasSalidas"></canvas>
+  <p><strong>Entradas de material:</strong> <span id="cantidadEntradas">#</span></p>
+</div>
+<div>
+  <canvas id="graficoEstacionalidad"></canvas>
+  <p><strong>Salidas de material:</strong> <span id="cantidadSalidas">#</span></p>
+</div>
+<div>
+  <canvas id="graficoDominanciaStock"></canvas>
+  <p><strong>Materiales:</strong> <span id="cantidadMateriales">#</span></p>
+</div>
     <div style="margin-top: 2rem;">
-      <p><strong>Entradas de material:</strong> #</p>
-      <p><strong>Salidas de material:</strong> #</p>
-      <p><strong>Materiales:</strong> #</p>
-      
       <div style="margin-top: 1rem; font-weight: bold;">
       <p style="font-size: 1.1rem;">Explicación de lo que contiene los gráficos</p>
     </div>
@@ -39,8 +34,12 @@ export async function renderReportes(contenedor) {
   `;
 
 
+
+
   await renderizarDashboard();
 }
+
+
 document.addEventListener("click", async (e) => {
   if (e.target && e.target.id === "generarPDF") {
     const { jsPDF } = window.jspdf;
@@ -70,10 +69,11 @@ export async function renderizarDashboard() {
 
   const entradasPorMes = agruparPorMes(entradas);
   const salidasPorMes = agruparPorMes(salidas);
+  document.getElementById("cantidadEntradas").textContent = entradas.length;
+  document.getElementById("cantidadSalidas").textContent = salidas.length;
   const meses = [...new Set([...Object.keys(entradasPorMes), ...Object.keys(salidasPorMes)])];
-
   // === Gráfico 1: Entradas vs Salidas por mes ===
-  const graficoEntradasSalidas=new Chart(document.getElementById('graficoEntradasSalidas'), {
+  const graficoEntradasSalidas = new Chart(document.getElementById('graficoEntradasSalidas'), {
     type: 'bar',
     data: {
       labels: meses,
@@ -90,87 +90,127 @@ export async function renderizarDashboard() {
   });
 
   // === Gráfico 2: Estacionalidad (entradas - salidas por mes) ===
-const variacionPorMes = meses.map(m => (entradasPorMes[m] || 0) - (salidasPorMes[m] || 0));
+  const variacionPorMes = meses.map(m => (entradasPorMes[m] || 0) - (salidasPorMes[m] || 0));
 
-const estacional=new Chart(document.getElementById('graficoEstacionalidad'), {
-  type: 'line',
+  const estacional = new Chart(document.getElementById('graficoEstacionalidad'), {
+    type: 'line',
+    data: {
+      labels: meses,
+      datasets: [{
+        label: 'Variación neta de stock por mes',
+        data: variacionPorMes,
+        borderColor: '#007bff',
+        backgroundColor: 'rgba(0, 123, 255, 0.2)',
+        fill: false,
+        tension: 0.3,
+        pointRadius: 5
+      }]
+    },
+    options: {
+      plugins: {
+        title: {
+          display: true,
+          text: 'Estacionalidad: Variación Neta Mensual del Stock'
+        },
+        subtitle: {
+          display: true,
+          text: 'Origen de los datos: N/A',
+          font: { size: 12, style: 'italic' },
+          color: '#555'
+        },
+        tooltip: {
+          callbacks: {
+            label: context => {
+              const value = context.parsed.y;
+              return value >= 0 ? `+${value} unidades` : `${value} unidades`;
+            }
+          }
+        }
+      },
+      scales: {
+        y: {
+          title: {
+            display: true,
+            text: 'Variación de stock'
+          }
+        }
+      },
+      interaction: {
+        mode: 'index',
+        intersect: false
+      },
+      responsive: true,
+      maintainAspectRatio: false
+    }
+  });
+// === Gráfico 3: Dominancia del stock actual con datos recientes ===
+const seisMesesAtras = new Date();
+seisMesesAtras.setMonth(seisMesesAtras.getMonth() - 4);
+
+// Filtrar entradas y salidas recientes
+const entradasRecientes = entradas.filter(e => new Date(e.fecha) >= seisMesesAtras);
+const salidasRecientes = salidas.filter(s => new Date(s.fecha) >= seisMesesAtras);
+
+// Obtener IDs únicos de materias primas con movimiento
+const idsRecientes = [...new Set([
+  ...entradasRecientes.map(e => e.materiaPrima?.id),
+  ...salidasRecientes.map(s => s.materiaPrima?.id)
+])];
+document.getElementById("cantidadMateriales").textContent = idsRecientes.length;
+
+
+// Obtener todas las materias primas
+const responseMP = await fetch('http://localhost:3000/api/seminario/materiaprima');
+const todasLasMaterias = await responseMP.json();
+
+// Buscar manualmente las materias primas por ID con un bucle
+const materiasConMovimiento = [];
+for (const id of idsRecientes) {
+  const materia = todasLasMaterias.find(m => m.id === id);
+  if (materia) {
+    materiasConMovimiento.push(materia);
+  }
+}
+
+// Verificar que haya datos
+if (materiasConMovimiento.length === 0) {
+  console.warn("No hay materias primas con movimiento reciente.");
+  return;
+}
+
+// Generar colores para cada materia prima
+function generarColoresAleatorios(n) {
+  const colores = [];
+  for (let i = 0; i < n; i++) {
+    colores.push(`hsl(${Math.floor(Math.random() * 360)}, 60%, 70%)`);
+  }
+  return colores;
+}
+
+const colores = generarColoresAleatorios(materiasConMovimiento.length);
+
+// Crear el gráfico de pastel
+const dominacion = new Chart(document.getElementById('graficoDominanciaStock'), {
+  type: 'pie',
   data: {
-    labels: meses,
+    labels: materiasConMovimiento.map(m => m.nombre),
     datasets: [{
-      label: 'Variación neta de stock por mes',
-      data: variacionPorMes,
-      borderColor: '#007bff',
-      backgroundColor: 'rgba(0, 123, 255, 0.2)',
-      fill: false,
-      tension: 0.3,
-      pointRadius: 5
+      data: materiasConMovimiento.map(m => m.stockActual),
+      backgroundColor: colores
     }]
   },
   options: {
     plugins: {
       title: {
         display: true,
-        text: 'Estacionalidad: Variación Neta Mensual del Stock'
-      },
-      subtitle: {
-        display: true,
-        text: 'Origen de los datos: N/A',
-        font: { size: 12, style: 'italic' },
-        color: '#555'
-      },
-      tooltip: {
-        callbacks: {
-          label: context => {
-            const value = context.parsed.y;
-            return value >= 0 ? `+${value} unidades` : `${value} unidades`;
-          }
-        }
+        text: 'Distribución del Stock Actual (materias primas con movimiento reciente)'
       }
-    },
-    scales: {
-      y: {
-        title: {
-          display: true,
-          text: 'Variación de stock'
-        }
-      }
-    },
-    interaction: {
-      mode: 'index',
-      intersect: false
-    },
-    responsive: true,
-    maintainAspectRatio: false
+    }
   }
 });
 
-
-
-  // === Gráfico 3: Dominancia del stock actual ===
-  const responseMP = await fetch('http://localhost:3000/api/seminario/materiaprima');
-  const materias = await responseMP.json();
-  materiasPrimas = materias;
-
-  const dominacion = new Chart(document.getElementById('graficoDominanciaStock'), {
-    type: 'pie',
-    data: {
-      labels: materias.map(m => m.nombre),
-      datasets: [{
-        data: materias.map(m => m.stockActual),
-        backgroundColor: ['#ff6384', '#36a2eb', '#ffcd56', '#4bc0c0']
-      }]
-    },
-    options: {
-      plugins: {
-        title: { display: true, text: 'Distribución del Stock Actual' }
-      }
-    }
-  });
-
-
-  const criticos = materias.filter(m => m.stockActual <= 10);
-
 }
+
 // Función auxiliar para agrupar entradas/salidas por mes
 function agruparPorMes(lista) {
   const resultado = {};
@@ -181,3 +221,4 @@ function agruparPorMes(lista) {
   });
   return resultado;
 }
+
