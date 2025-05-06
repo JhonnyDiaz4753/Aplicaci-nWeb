@@ -2,14 +2,18 @@ import { renderRegistro } from './jdiaz/registro.js';
 import { renderAlertas } from './jdiaz/Alertas.js';
 import { renderReportes } from './jdiaz/reportes.js';
 
-
 document.addEventListener('DOMContentLoaded', () => {
   mostrarComponente('registro'); 
 
-  // Puedes agregar listeners de navegación aquí si tienes botones de menú
+  // Listeners para botones de menú
   document.getElementById('btnRegistro')?.addEventListener('click', () => mostrarComponente('registro'));
   document.getElementById('btnAlertas')?.addEventListener('click', () => mostrarComponente('Alertas'));
   document.getElementById('btnReportes')?.addEventListener('click', () => mostrarComponente('reportes'));
+
+  // Listener para abrir compras.htm en nueva pestaña
+  document.getElementById('btnCompras')?.addEventListener('click', () => {
+    window.open('compras.htm', '_blank');
+  });  
 });
 
 function mostrarComponente(componente) {
