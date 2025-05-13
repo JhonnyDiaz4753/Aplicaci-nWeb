@@ -261,3 +261,45 @@ th {
 .button:active {
   border: 1px solid #b20000;
 }
+header .logo img {
+  height: 60px; /* Ajusta el tamaño del logo */
+  border-radius: 50%; /* Hace que el logo tenga bordes redondeados */
+  transition: transform 0.3s ease;
+}
+
+header .logo img:hover {
+  transform: scale(1.1); /* Aumenta ligeramente el tamaño del logo cuando pasa el cursor */
+}
+
+.bienvenida {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.bienvenida .logo-bienvenida {
+  width: 220px;
+  height: auto;
+  border-radius: 50%;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.bienvenida .logo-bienvenida:hover {
+  transform: scale(1.05);
+}
+
+.bienvenida h1 {
+  color: #007bff;
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+.bienvenida p {
+  font-size: 1.1rem;
+  max-width: 600px;
+  margin: 0 auto;
+  color: #555;
+}
+
+

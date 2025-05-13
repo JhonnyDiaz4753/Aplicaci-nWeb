@@ -21,7 +21,7 @@ export async function renderAlertas(contenedor) {
   `;
 
   await cargarMateriasPrimas();
-  await mostrarStock();
+  await mostrarStock(1);
 
   const btnNotificar = document.getElementById('btnNotificar');
   btnNotificar.addEventListener('click', notificarProveedores);
@@ -29,14 +29,14 @@ export async function renderAlertas(contenedor) {
 
 async function cargarMateriasPrimas() {
   try {
-    const response = await fetch('http://localhost:3000/api/seminario/materiaprima');
+    const response = await fetch('http://3.148.190.86:3000/api/seminario/materiaprima');
     materiasPrimas = await response.json();
   } catch (error) {
     console.error('Error cargando materias primas:', error);
   }
 }
 
-async function mostrarStock() {
+async function mostrarStock(number) {
   const tbody = document.querySelector('#tablaStock tbody');
   tbody.innerHTML = '';
 
@@ -91,7 +91,8 @@ async function mostrarStock() {
   });
 
   // Alerta automática si hay algún stock crítico
-  if (hayCriticos) {
+  if (number === 1) {
+    if (hayCriticos) {
     const lista = materiasPrimas
       .filter(mp => mp.stockActual <= 10)
       .map(mp => `- ${mp.nombre} (${mp.stockActual})`)
@@ -103,6 +104,8 @@ async function mostrarStock() {
       html: `<p>Los siguientes materiales tienen <b>stock crítico</b>:</p><pre style="text-align:left">${lista}</pre>`
     });
   }
+  }
+  
 }
 
 function notificarProveedores() {
@@ -133,15 +136,27 @@ function notificarIndividual(mp) {
 }
 
 window.eliminarMateriaPrima = async function(id) {
+
+  const result = await Swal.fire({
+    title: '¿Estás seguro?',
+    text: 'Esta acción no se puede deshacer.',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Sí, eliminar',
+    cancelButtonText: 'Cancelar'
+  });
+
+  if (!result.isConfirmed) return;
+  
   try {
-    const response = await fetch(`http://localhost:3000/api/seminario/materiaprima/${id}`, {
+    const response = await fetch(`http://3.148.190.86:3000/api/seminario/materiaprima/${id}`, {
       method: 'DELETE'
     });
 
     if (response.ok) {
       Swal.fire('Eliminado', 'La materia prima ha sido eliminada correctamente.', 'success');
       await cargarMateriasPrimas();
-      await mostrarStock();
+      await mostrarStock(2);
     } else {
       Swal.fire('Error', 'No se pudo eliminar la materia prima.', 'error');
     }
