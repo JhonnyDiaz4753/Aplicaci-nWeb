@@ -1,8 +1,4 @@
-Aquí tienes el texto completamente formateado en **Markdown (.md)** listo para copiar y pegar como tu `README.md`:
 
----
-
-````md
 # 🧾 Sistema de Gestión de Inventario
 
 ## 📝 Descripción
