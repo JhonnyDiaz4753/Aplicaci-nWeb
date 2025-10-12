@@ -115,7 +115,4 @@ El backend proxy (`node-server/server.js`) expone rutas como:
 📚 Proyecto académico para la **gestión de inventario de materia prima**.
 
 
-```
 
-¿Quieres que le agregue también **badges** (Docker, Node.js, Angular, SonarCloud, etc.) y una sección de **capturas o GIFs** del proyecto para que quede más visual en GitHub?
-```
