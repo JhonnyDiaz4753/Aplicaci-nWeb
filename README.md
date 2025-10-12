@@ -1,16 +1,26 @@
 
 # 🧾 Sistema de Gestión de Inventario
+<img width="1915" height="922" alt="image" src="https://github.com/user-attachments/assets/d755fef4-bebd-4886-b96b-d379b8886d9b" />
+
 
 ## 📝 Descripción
 
 Este proyecto es una **aplicación web para la gestión de inventario de materia prima**, que permite:
 
-- Registrar **entradas y salidas**.  
-- Consultar el **stock actualizado**.  
-- Generar **alertas por niveles críticos**.  
-- Visualizar **reportes estadísticos**.  
+- Registrar **entradas y salidas**.
+  <img width="1911" height="924" alt="image" src="https://github.com/user-attachments/assets/110d32a2-bf6b-4396-99f8-6643f4365599" />
 
-Incluye un **frontend moderno** y un **backend Node.js** que actúa como **proxy hacia una API externa**.
+- Consultar el **stock actualizado**.
+ <img width="1900" height="592" alt="image" src="https://github.com/user-attachments/assets/86b14574-1fb3-4e5f-b2f3-4c31d3c64958" />
+ 
+- Generar **alertas por niveles críticos**.
+  <img width="353" height="274" alt="image" src="https://github.com/user-attachments/assets/81888f65-09fd-49c1-af35-db5d02ed9eea" />
+
+- Visualizar **reportes estadísticos**.
+  <img width="1918" height="908" alt="image" src="https://github.com/user-attachments/assets/09a2d12b-45c8-4fed-bd7c-ad8792bcf62e" />
+
+
+Incluye un **frontend moderno** y un **backend Node.js** que actúa como **proxy hacia una API externa en AWS**.
 
 ---
 
